@@ -1,3 +1,4 @@
+import { catalogPhotos } from "./data/catalog-photos.js";
 import { languages } from "./i18n.js";
 
 export const sheetUrl =
@@ -188,6 +189,9 @@ export async function loadCatalog(url, base) {
     if (!geometry && file) geometry = await fetchGeometry(file);
     if (!geometry && !isRoute) geometry = pointGeometry(row);
 
+    const imageUrl = row.image_url || row.kep || row.foto;
+    const localImage = catalogPhotos.get(imageUrl);
+
     return {
       key: (row.id || "row") + ":" + (index + 2),
       name,
@@ -198,10 +202,10 @@ export async function loadCatalog(url, base) {
       localityKey,
       geometry,
       kind: geometry ? (geometry.type === "Point" ? "point" : "route") : (isRoute ? "route" : "point"),
-      image: webUrl(row.image_url || row.kep, base),
+      image: webUrl(localImage || imageUrl, base),
       imageAlt: translated(row, "image_alt"),
-      imageAuthor: row.image_author,
-      imageSource: webUrl(row.image_source_url, base),
+      imageAuthor: row.image_author || row.foto_szerzoje,
+      imageSource: webUrl(row.image_source_url || (localImage ? imageUrl : ""), base),
       imageLicense: row.image_license,
       imageLicenseUrl: webUrl(row.image_license_url, base),
       website: webUrl(row.website_url, base),

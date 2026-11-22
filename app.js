@@ -166,7 +166,7 @@ function makeCard(item) {
 
 function imageCredit(item) {
   const credit = element("p", "photo-credit");
-  credit.append(strings.credits + " · ");
+  if (item.imageAuthor || !item.imageSource) credit.append(strings.credits + " · ");
   if (item.imageSource) credit.append(link(item.imageAuthor || strings.credits, item.imageSource));
   else credit.append(item.imageAuthor || "");
   if (item.imageLicense) {
