@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f2e6c7">
+    <meta name="description" content="A Rila-völgy látnivalói és túraútvonalai, kereshető katalógusban és térképen.">
+    <title>Rila völgye</title>
+    <link rel="stylesheet" href="./assets/leaflet/leaflet.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script defer src="./assets/leaflet/leaflet.js"></script>
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body id="top">
+    <a class="skip-link" href="#explore" data-text="skip">Ugrás a katalógushoz</a>
+
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span data-text="siteName">Rila völgye</span>
+        </a>
+        <nav class="view-nav" data-aria="viewLabel" aria-label="Nézet">
+          <a href="#explore" data-view="catalog" data-text="catalog" aria-current="true">Katalógus</a>
+          <a href="#explore" data-view="map" data-text="map">Térkép</a>
+        </nav>
+        <div class="language-switch" role="group" data-aria="languageLabel" aria-label="Nyelv">
+          <button type="button" data-language="hu" lang="hu" aria-label="Magyar" aria-pressed="true">HU</button>
+          <button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
+          <button type="button" data-language="bg" lang="bg" aria-label="Български" aria-pressed="false">БГ</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="shell hero" aria-labelledby="hero-title">
+        <div class="hero-inner">
+          <p class="hero-location" data-text="region">Rila-hegység, Bulgária</p>
+          <h1 id="hero-title" data-text="siteName">Rila völgye</h1>
+          <p class="hero-description" data-text="heroDescription">Látnivalók és túraútvonalak a Rilszka folyó völgyében.</p>
+          <a class="button hero-link" href="#explore" data-text="heroAction">A környék felfedezése</a>
+        </div>
+        <figure class="hero-map" aria-hidden="true">
+          <img src="./assets/maps/rila-relief.jpg" width="1500" height="860" alt="" fetchpriority="high">
+          <span class="cover-compass" data-text="north">É</span>
+          <span class="cover-place cover-pastra" data-text="coverPastra">Pasztra</span>
+          <span class="cover-place cover-monastery" data-text="coverMonastery">Rilai kolostor</span>
+          <span class="cover-scale">5 km</span>
+        </figure>
+      </section>
+
+      <section class="shell explorer" id="explore" tabindex="-1" aria-labelledby="explore-title">
+        <div class="explore-heading">
+          <h2 id="explore-title" data-text="explore">Látnivalók és útvonalak</h2>
+          <p id="result-count" class="result-count" role="status"></p>
+        </div>
+
+        <form class="filters" id="filters" role="search" aria-labelledby="explore-title">
+          <label class="search-field">
+            <span data-text="search">Keresés</span>
+            <span class="search-input">
+              <input type="search" id="search" name="search" placeholder="Név, helyszín vagy kulcsszó" autocomplete="off">
+            </span>
+          </label>
+          <label>
+            <span id="category-label" data-text="category">Kategória</span>
+            <select id="category" name="category" aria-labelledby="category-label"><option value="">Összes</option></select>
+          </label>
+          <label>
+            <span id="locality-label" data-text="locality">Helyszín</span>
+            <select id="locality" name="locality" aria-labelledby="locality-label"><option value="">Összes</option></select>
+          </label>
+          <label>
+            <span id="type-label" data-text="type">Típus</span>
+            <select id="type" name="type" aria-labelledby="type-label">
+              <option value="" data-text="allOptions">Összes</option>
+              <option value="point" data-text="points">Pontok</option>
+              <option value="route" data-text="routes">Útvonalak</option>
+            </select>
+          </label>
+          <button type="reset" class="button reset-filters" id="reset-filters" data-text="reset" disabled>Törlés</button>
+        </form>
+
+        <div class="demo-notice" id="demo-notice" hidden>
+          <p><strong data-text="demoLabel">Mintanézet.</strong> <span data-text="demoDescription">Ezek a bejegyzések a keresés és a térkép kipróbálásához készültek.</span></p>
+          <a id="exit-demo" href="./" data-text="liveLink">Élő katalógus</a>
+        </div>
+
+        <div class="message map-mode-message" id="map-mode-message" hidden></div>
+        <div class="results-layout" id="results-layout">
+          <div class="list-panel" id="list-panel">
+            <ul class="cards" id="cards" aria-labelledby="explore-title"></ul>
+            <div class="message" id="list-message" hidden></div>
+          </div>
+
+          <section class="map-panel" id="map-panel" aria-labelledby="map-title">
+            <div class="map-heading">
+              <div>
+                <h3 id="map-title" data-text="map">Térkép</h3>
+                <p id="mapped-count" class="mapped-count"></p>
+              </div>
+              <button type="button" id="fit-map" class="button fit-button" data-text="fitMap">Találatok mutatása</button>
+            </div>
+            <div class="map-frame">
+              <div id="map" aria-labelledby="map-title" role="region"></div>
+              <p class="tile-notice" id="tile-notice" role="status" hidden></p>
+            </div>
+            <ul class="map-legend" data-aria="legend" aria-label="Jelmagyarázat">
+              <li><span class="legend-point" aria-hidden="true"></span><span data-text="point">Pont</span></li>
+              <li><span class="legend-route" aria-hidden="true"></span><span data-text="route">Útvonal</span></li>
+              <li><span class="legend-contour" aria-hidden="true"></span><span data-text="contour">Szintvonal</span></li>
+            </ul>
+          </section>
+        </div>
+        <noscript><p class="message">A katalógushoz JavaScript szükséges. / This catalog requires JavaScript. / За каталога е необходим JavaScript.</p></noscript>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <span class="footer-name" data-text="siteName">Rila völgye</span>
+        <div class="footer-links">
+          <a id="sheet-link" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTLijcKeS2RHrfgzoQaeZl_qcVD5o5DRxF7kPGMQRmfX_Hv4So1wYP4IyrdZiNuj2d8w6YscOeoau4k/pub?gid=0&amp;single=true&amp;output=csv" data-text="dataSource">A katalógus adatforrása</a>
+          <span><span data-text="terrainSource">Domborzati adatok</span> · <a href="https://registry.opendata.aws/terrain-tiles/">Mapzen Terrain Tiles</a></span>
+        </div>
+      </div>
+    </footer>
+
+    <dialog id="detail-dialog" aria-labelledby="detail-title">
+      <form method="dialog" class="dialog-controls">
+        <button class="button dialog-close" value="close" data-aria="close" aria-label="Bezárás" autofocus>×</button>
+      </form>
+      <div id="detail-content"></div>
+    </dialog>
+  </body>
+</html>
