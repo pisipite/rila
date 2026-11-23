@@ -1,12 +1,12 @@
+import { localized } from "./i18n.js";
+import { createPictogram } from "./pictograms.js";
+
 const regionCenter = [42.1271, 23.2207];
 const defaultZoom = 11;
 const tileUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const attribution = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
-const contourBounds = [[42.063, 23.106], [42.192, 23.409]];
-const contourUrl = new URL("./assets/maps/rila-contours.png", import.meta.url).href;
-const contourCredit = '<a href="https://registry.opendata.aws/terrain-tiles/">Mapzen</a>';
 
-export function createMap(container, fitButton, notice, selectItem, initialLabels) {
+export function createMap(container, { fitButton, notice, selectItem, initialLabels }) {
   const L = window.L;
   if (!L) {
     notice.textContent = initialLabels.mapError;
@@ -26,12 +26,6 @@ export function createMap(container, fitButton, notice, selectItem, initialLabel
   const tiles = L.tileLayer(tileUrl, { maxZoom: 19, attribution });
   const zoom = L.control.zoom({ position: "topright" }).addTo(map);
   const features = L.featureGroup().addTo(map);
-  const icon = L.divIcon({
-    className: "place-marker",
-    iconSize: [22, 22],
-    iconAnchor: [11, 11],
-    popupAnchor: [0, -12],
-  });
 
   function showTileState() {
     notice.textContent = labels.tileError;
@@ -45,10 +39,6 @@ export function createMap(container, fitButton, notice, selectItem, initialLabel
     showTileState();
   });
   tiles.addTo(map);
-  L.imageOverlay(contourUrl, contourBounds, {
-    opacity: 0.58,
-    attribution: contourCredit,
-  }).addTo(map);
   L.control.scale({ position: "bottomleft", imperial: false }).addTo(map);
 
   function setLabels(strings) {
@@ -80,16 +70,27 @@ export function createMap(container, fitButton, notice, selectItem, initialLabel
   fitButton.addEventListener("click", fitItems);
   fitButton.disabled = true;
 
-  function setItems(items, nameOf, localityOf, fit) {
+  function pointMarker(position, name, categoryKey) {
+    const icon = L.divIcon({
+      className: "place-marker",
+      html: createPictogram(categoryKey),
+      iconSize: [28, 28],
+      iconAnchor: [14, 14],
+      popupAnchor: [0, -14],
+    });
+    return L.marker(position, { icon, title: name, alt: name, riseOnHover: true });
+  }
+
+  function setItems(items, language, fit) {
     map.closePopup();
     features.clearLayers();
     layersByKey.clear();
     for (const item of items) {
       if (!item.geometry) continue;
 
-      const name = nameOf(item);
+      const name = localized(item.name, language);
       const [layer] = L.geoJSON(item.geometry, {
-        pointToLayer: (_feature, position) => L.marker(position, { icon, title: name, alt: name }),
+        pointToLayer: (_feature, position) => pointMarker(position, name, item.categoryKey),
         style: { color: "#9e3e31", weight: 5, dashArray: "9 5" },
       }).getLayers();
       layer.addTo(features);
@@ -100,7 +101,7 @@ export function createMap(container, fitButton, notice, selectItem, initialLabel
       const title = document.createElement("strong");
       title.textContent = name;
       popup.append(title);
-      const locality = localityOf(item);
+      const locality = localized(item.locality, language);
       if (locality) {
         const subtitle = document.createElement("span");
         subtitle.textContent = locality;

@@ -4,11 +4,18 @@ import { languages } from "./i18n.js";
 export const sheetUrl =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLijcKeS2RHrfgzoQaeZl_qcVD5o5DRxF7kPGMQRmfX_Hv4So1wYP4IyrdZiNuj2d8w6YscOeoau4k/pub?gid=0&single=true&output=csv";
 
-const categories = {
+export const categoryLabels = {
   heritage: { hu: "Kulturális örökség", en: "Cultural heritage", bg: "Културно наследство" },
   nature: { hu: "Természet", en: "Nature", bg: "Природа" },
   village: { hu: "Település", en: "Village", bg: "Селище" },
   hiking: { hu: "Túra", en: "Hiking", bg: "Пешеходен туризъм" },
+  menedekhaz: { hu: "Menedékház", en: "Mountain hut", bg: "Хижа" },
+  sziklamaszas: { hu: "Sziklamászás", en: "Rock climbing", bg: "Скално катерене" },
+  furdo: { hu: "Fürdő", en: "Bathing spots", bg: "Места за къпане" },
+  siterep: { hu: "Síterep", en: "Ski area", bg: "Ски зона" },
+  vendeglatas: { hu: "Vendéglátás", en: "Food and drink", bg: "Заведения" },
+  boraszat: { hu: "Borászat", en: "Winery", bg: "Винарна" },
+  bevasarlas: { hu: "Bevásárlás", en: "Shopping", bg: "Пазаруване" },
 };
 
 export function foldText(value) {
@@ -16,7 +23,7 @@ export function foldText(value) {
 }
 
 const categoryCodes = new Map(
-  Object.entries(categories).flatMap(([code, labels]) =>
+  Object.entries(categoryLabels).flatMap(([code, labels]) =>
     [code, ...Object.values(labels)].map((label) => [foldText(label), code]),
   ),
 );
@@ -176,7 +183,7 @@ export async function loadCatalog(url, base) {
     const normalizedCategory = foldText(categoryName);
     const standardCategory = categoryCodes.get(normalizedCategory);
     const categoryKey = standardCategory || normalizedCategory;
-    const category = translated(row, "category", categories[standardCategory] || { hu: categoryName });
+    const category = translated(row, "category", categoryLabels[standardCategory] || { hu: categoryName });
     const localityName = row.locality || row.helyszin || row.locality_hu || row.locality_en || row.locality_bg || "";
     const locality = translated(row, "locality", { hu: localityName });
     const localityKey = foldText(localityName);

@@ -1,6 +1,7 @@
-import { loadCatalog, matchingItems, sheetUrl } from "./catalog.js";
+import { categoryLabels, loadCatalog, matchingItems, sheetUrl } from "./catalog.js?v=2";
 import { languages, localized, messages } from "./i18n.js";
-import { createMap } from "./map.js";
+import { createMap } from "./map.js?v=3";
+import { createPictogram, pointLegendEntry } from "./pictograms.js";
 
 const params = new URLSearchParams(location.search);
 const demo = params.get("demo") === "1";
@@ -30,9 +31,17 @@ const mapMessage = byId("map-mode-message");
 const detailDialog = byId("detail-dialog");
 const detailContent = byId("detail-content");
 const tileNotice = byId("tile-notice");
+const atlasLegend = byId("atlas-legend");
+const atlasLineEntries = [...atlasLegend.children];
+const mapLegend = byId("map-legend");
 const viewLinks = document.querySelectorAll("[data-view]");
 const languageButtons = document.querySelectorAll("[data-language]");
-const map = createMap(byId("map"), byId("fit-map"), tileNotice, showDetails, strings);
+const map = createMap(byId("map"), {
+  fitButton: byId("fit-map"),
+  notice: tileNotice,
+  selectItem: showDetails,
+  initialLabels: strings,
+});
 
 function label(values) {
   return localized(values, language);
@@ -83,6 +92,10 @@ function setLanguage(next) {
     button.setAttribute("aria-pressed", String(button.dataset.language === language));
   });
   fields.search.placeholder = strings.searchPlaceholder;
+  const atlasPointEntries = ["nature", "village", "heritage"].map((categoryKey) =>
+    pointLegendEntry(categoryKey, label(categoryLabels[categoryKey])),
+  );
+  atlasLegend.replaceChildren(...atlasPointEntries, ...atlasLineEntries);
   if (map) map.setLabels(strings);
   else tileNotice.textContent = strings.mapError;
   byId("exit-demo").href = previewUrl(false);
@@ -121,6 +134,45 @@ function updateFilterOptions() {
   updateSelect(fields.locality, (item) => item.localityKey, (item) => item.locality, strings.allOptions);
   fields.search.disabled = items.length === 0;
   fields.type.disabled = items.length === 0;
+  updateMapLegend();
+}
+
+function updateMapLegend() {
+  const entries = new Map();
+  for (const item of items) {
+    if (!item.geometry) continue;
+    const filter = item.categoryKey ? "category" : "type";
+    const value = item.categoryKey || item.kind;
+    const key = filter + ":" + value;
+    if (!entries.has(key)) {
+      entries.set(key, { filter, value, name: label(item.category) || strings[item.kind], kinds: new Set() });
+    }
+    entries.get(key).kinds.add(item.kind);
+  }
+
+  const legendItems = [...entries.values()]
+    .sort((left, right) => left.name.localeCompare(right.name, language))
+    .map(({ filter, value, name, kinds }) => {
+      const control = fields[filter];
+      const button = action(name, () => {
+        control.value = control.value === value ? "" : value;
+        clearTimeout(searchTimer);
+        renderResults();
+      }, "legend-filter");
+      button.dataset.filter = filter;
+      button.dataset.value = value;
+      if (kinds.has("route")) {
+        const dash = element("span", "legend-route");
+        dash.setAttribute("aria-hidden", "true");
+        button.prepend(dash);
+      }
+      if (kinds.has("point")) button.prepend(createPictogram(filter === "category" ? value : ""));
+      const item = element("li");
+      item.append(button);
+      return item;
+    });
+  mapLegend.replaceChildren(...legendItems);
+  mapLegend.hidden = !map || !legendItems.length;
 }
 
 function makePhoto(item, className) {
@@ -235,6 +287,9 @@ let lastVisible = [];
 function renderResults({ fit = true } = {}) {
   const filters = Object.fromEntries(Object.entries(fields).map(([name, control]) => [name, control.value]));
   resetFilters.disabled = !Object.values(filters).some(Boolean);
+  for (const button of mapLegend.querySelectorAll(".legend-filter")) {
+    button.setAttribute("aria-pressed", String(filters[button.dataset.filter] === button.dataset.value));
+  }
   const visible = matchingItems(items, filters);
   lastVisible = visible;
   const mappedCount = visible.filter((item) => item.geometry).length;
@@ -245,7 +300,7 @@ function renderResults({ fit = true } = {}) {
     ? strings.mapped(numberFormat.format(mappedCount), numberFormat.format(visible.length))
     : "";
   cards.replaceChildren(...visible.map(makeCard));
-  map?.setItems(visible, (item) => label(item.name), (item) => label(item.locality), fit);
+  map?.setItems(visible, language, fit);
   updateMessages(visible);
 }
 
@@ -306,6 +361,9 @@ languageButtons.forEach((button) => button.addEventListener("click", () => {
 
 byId("demo-notice").hidden = !demo;
 byId("sheet-link").href = sheetUrl;
+for (const placeholder of document.querySelectorAll("[data-pictogram]")) {
+  placeholder.append(createPictogram(placeholder.dataset.pictogram));
+}
 setView(view);
 setLanguage(language);
 refreshCatalog();

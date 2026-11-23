@@ -60,7 +60,9 @@ A feltöltést követően a GitHubon nyisd meg a **Settings → Pages** lapot. A
 ## Források
 
 - A helyben tárolt Leaflet 1.9.4 licence az `assets/leaflet/LICENSE` fájlban található. Az alaptérkép OpenStreetMap. [OpenStreetMap csempehasználati feltételek](https://operations.osmfoundation.org/policies/tiles/)
-- A borító és a térképre helyezett szintvonalak a Mapzen Terrain Tiles N42E023 domborzati raszteréből készültek, 50 méteres szintközzel. [Mapzen Terrain Tiles](https://registry.opendata.aws/terrain-tiles/), [az adatok forrásai és licencei](https://github.com/tilezen/joerd/blob/master/docs/attribution.md)
+- Az áttekintő térkép domborzata a Mapzen Terrain Tiles N42E023 raszteréből készült. Az áttekintőn a helyi GeoJSON-fájlokból válogatott útvonalak szerepelnek. [Mapzen Terrain Tiles](https://registry.opendata.aws/terrain-tiles/), [az adatok forrásai és licencei](https://github.com/tilezen/joerd/blob/master/docs/attribution.md)
+- A kolostor nyomdai hatású borítóillusztrációja az oldalhoz készült, az ImageGen eszközzel.
+- Az Oswald betűcsalád SIL Open Font License alatt használható. A licenc az `assets/fonts/OFL-Oswald.txt` fájlban található. [Oswald forrása](https://github.com/google/fonts/tree/main/ofl/oswald)
 - A mintaútvonalnál szereplő völgyfotó N10705013 munkája, CC BY-SA 4.0. A weboldal a megjelenítéskor vágja a képet. [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:%D0%94%D0%BE%D0%BB%D0%B8%D0%BD%D0%B0%D1%82%D0%B0_%D0%BD%D0%B0_%D0%A0%D0%B8%D0%BB%D1%81%D0%BA%D0%B0_%D1%80%D0%B5%D0%BA%D0%B0_%D0%B8_%D0%A0%D0%B8%D0%BB%D1%81%D0%BA%D0%B8_%D0%BC%D0%B0%D0%BD%D0%B0%D1%81%D1%82%D0%B8%D1%80;_%D0%BF%D0%BE%D0%B3%D0%BB%D0%B5%D0%B4_%D0%BE%D1%82_%D0%95%D0%BB%D0%B5%D0%BD%D0%B8_%D0%B2%D1%80%D1%8A%D1%85.jpg)
 - A mintanézet kolostorfotója Kyle Taylor munkája, CC BY 2.0. [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Rila_Monastery_interior_view.jpg)
 - A sztobi földpiramisokról készült fotó Bulpa munkája, CC BY-SA 4.0. [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:%D0%A1%D1%82%D0%BE%D0%B1%D1%81%D0%BA%D0%B8_%D0%BF%D0%B8%D1%80%D0%B0%D0%BC%D0%B8%D0%B4%D0%B8_%D0%BF%D0%B0%D0%BD%D0%BE%D1%80%D0%B0%D0%BC%D0%B0.jpg)
