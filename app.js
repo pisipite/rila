@@ -157,7 +157,7 @@ function updateMapLegend() {
       const button = action(name, () => {
         control.value = control.value === value ? "" : value;
         clearTimeout(searchTimer);
-        renderResults();
+        renderResults({ fit: false });
       }, "legend-filter");
       button.dataset.filter = filter;
       button.dataset.value = value;
@@ -336,13 +336,14 @@ filterForm.addEventListener("submit", (event) => {
 filterForm.addEventListener("reset", (event) => {
   event.preventDefault();
   clearTimeout(searchTimer);
+  const categoryWasSelected = fields.category.value !== "";
   Object.values(fields).forEach((control) => { control.value = ""; });
-  renderResults();
+  renderResults({ fit: !categoryWasSelected });
 });
 filterForm.addEventListener("change", (event) => {
   if (event.target.tagName === "SELECT") {
     clearTimeout(searchTimer);
-    renderResults();
+    renderResults({ fit: event.target !== fields.category });
   }
 });
 fields.search.addEventListener("input", () => {
