@@ -116,11 +116,3 @@ export function createPictogram(categoryKey) {
   pictogram.setAttribute("aria-hidden", "true");
   return pictogram;
 }
-
-export function pointLegendEntry(categoryKey, label) {
-  const item = document.createElement("li");
-  const name = document.createElement("span");
-  name.textContent = label;
-  item.append(createPictogram(categoryKey), name);
-  return item;
-}

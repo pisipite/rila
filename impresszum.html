@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff">
+    <title>Impresszum · Rila völgye</title>
+    <link rel="stylesheet" href="./styles.css?v=10">
+    <script type="module" src="./impresszum.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="./" data-home-link data-text="siteName">Rila völgye</a>
+        <nav class="view-nav" data-aria="viewLabel" aria-label="Nézet">
+          <a href="./#explore" data-home-link data-text="catalog">Katalógus</a>
+        </nav>
+        <div class="language-switch" role="group" data-aria="languageLabel" aria-label="Nyelv">
+          <button type="button" data-language="hu" lang="hu" aria-label="Magyar" aria-pressed="true">HU</button>
+          <button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
+          <button type="button" data-language="bg" lang="bg" aria-label="Български" aria-pressed="false">БГ</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell imprint" aria-labelledby="imprint-title">
+      <h1 id="imprint-title" data-text="imprint">Impresszum</h1>
+      <p><span data-text="siteLicense">Az oldal licence</span> · <a href="https://github.com/pisipite/rila/blob/main/LICENSE" lang="en" hreflang="en">GNU General Public License v3.0</a></p>
+      <p data-text="aiDisclosure">Az oldal mesterséges intelligencia segítségével készült.</p>
+    </main>
+  </body>
+</html>

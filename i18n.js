@@ -52,6 +52,9 @@ export const messages = {
     liveLink: "Élő katalógus",
     dataSource: "A katalógus adatforrása",
     terrainSource: "Domborzati adatok",
+    siteLicense: "Az oldal licence",
+    aiDisclosure: "Az oldal mesterséges intelligencia segítségével készült.",
+    imprint: "Impresszum",
     credits: "Fotó",
     viewOnMap: "Térképen",
     details: "Részletek",
@@ -110,6 +113,9 @@ export const messages = {
     liveLink: "Live catalog",
     dataSource: "Catalog data source",
     terrainSource: "Terrain data",
+    siteLicense: "Site license",
+    aiDisclosure: "This site was built with the help of AI.",
+    imprint: "Legal notice",
     credits: "Photo",
     viewOnMap: "Show on map",
     details: "Details",
@@ -168,6 +174,9 @@ export const messages = {
     liveLink: "Към каталога",
     dataSource: "Източник на данните",
     terrainSource: "Данни за релефа",
+    siteLicense: "Лиценз на сайта",
+    aiDisclosure: "Сайтът е създаден с помощта на изкуствен интелект.",
+    imprint: "Правна информация",
     credits: "Снимка",
     viewOnMap: "На картата",
     details: "Подробности",
@@ -179,4 +188,19 @@ export const messages = {
 
 export function localized(values, language) {
   return values[language] || values.hu || values.en || values.bg || "";
+}
+
+export function applyPageLanguage(language) {
+  const strings = messages[language];
+  document.documentElement.lang = language;
+  for (const node of document.querySelectorAll("[data-text]")) {
+    node.textContent = strings[node.dataset.text];
+  }
+  for (const node of document.querySelectorAll("[data-aria]")) {
+    node.setAttribute("aria-label", strings[node.dataset.aria]);
+  }
+  for (const button of document.querySelectorAll("[data-language]")) {
+    button.setAttribute("aria-pressed", String(button.dataset.language === language));
+  }
+  return strings;
 }

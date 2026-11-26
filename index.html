@@ -3,23 +3,20 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#243b49">
+    <meta name="theme-color" content="#ffffff">
     <meta name="description" content="A Rila-völgy látnivalói és túraútvonalai, kereshető katalógusban és térképen.">
     <title>Rila völgye</title>
     <link rel="stylesheet" href="./assets/leaflet/leaflet.css">
-    <link rel="stylesheet" href="./styles.css?v=3">
+    <link rel="stylesheet" href="./styles.css?v=10">
     <script defer src="./assets/leaflet/leaflet.js"></script>
-    <script type="module" src="./app.js?v=4"></script>
+    <script type="module" src="./app.js?v=8"></script>
   </head>
   <body id="top">
     <a class="skip-link" href="#explore" data-text="skip">Ugrás a katalógushoz</a>
 
     <header class="site-header">
       <div class="shell header-inner">
-        <a class="brand" href="#top">
-          <span class="brand-mark" aria-hidden="true"></span>
-          <span data-text="siteName">Rila völgye</span>
-        </a>
+        <a class="brand" href="#top" data-text="siteName">Rila völgye</a>
         <nav class="view-nav" data-aria="viewLabel" aria-label="Nézet">
           <a href="#explore" data-view="catalog" data-text="catalog" aria-current="true">Katalógus</a>
           <a href="#explore" data-view="map" data-text="map">Térkép</a>
@@ -41,33 +38,21 @@
           <p class="hero-description" data-text="heroDescription">Látnivalók és túraútvonalak a Rilszka folyó völgyében.</p>
           <a class="button hero-link" href="#explore" data-view="catalog" data-text="heroAction">A környék felfedezése</a>
         </div>
-        <section class="atlas" aria-labelledby="atlas-title">
-          <div class="atlas-heading">
-            <h2 id="atlas-title" data-text="atlasTitle">Áttekintő térkép</h2>
+        <figure class="atlas">
+          <div class="hero-map" aria-hidden="true">
+            <img class="atlas-relief" src="./assets/maps/rila-relief.jpg" width="1500" height="860" alt="">
+            <img class="atlas-trails" src="./assets/maps/rila-atlas-trails.png" width="1500" height="860" alt="">
+            <span class="cover-compass" data-text="north">É</span>
+            <span class="cover-place cover-stob"><span class="cover-symbol" data-pictogram="nature"></span><span data-text="coverStob">Sztobi piramisok</span></span>
+            <span class="cover-place cover-pastra"><span class="cover-symbol" data-pictogram="village"></span><span data-text="coverPastra">Pasztra</span></span>
+            <span class="cover-place cover-monastery"><span class="cover-symbol" data-pictogram="heritage"></span><span data-text="coverMonastery">Rilai kolostor</span></span>
+            <span class="cover-scale">5 km</span>
+          </div>
+          <figcaption class="atlas-caption">
+            <span data-text="atlasTitle">Áttekintő térkép</span>
             <a class="atlas-link" href="#explore" data-view="map" data-text="openMap">Interaktív térkép</a>
-          </div>
-          <div class="atlas-neatline" aria-hidden="true">
-            <div class="atlas-longitudes">
-              <span style="--tick: 14.52%">23°09′</span>
-              <span style="--tick: 31.02%">23°12′</span>
-              <span style="--tick: 47.52%">23°15′</span>
-              <span style="--tick: 64.03%">23°18′</span>
-              <span style="--tick: 80.53%">23°21′</span>
-            </div>
-            <figure class="hero-map">
-              <img class="atlas-relief" src="./assets/maps/rila-relief.jpg" width="1500" height="860" alt="">
-              <img class="atlas-trails" src="./assets/maps/rila-atlas-trails.png" width="1500" height="860" alt="">
-              <span class="cover-compass" data-text="north">É</span>
-              <span class="cover-place cover-stob"><span class="cover-symbol" data-pictogram="nature"></span><span data-text="coverStob">Sztobi piramisok</span></span>
-              <span class="cover-place cover-pastra"><span class="cover-symbol" data-pictogram="village"></span><span data-text="coverPastra">Pasztra</span></span>
-              <span class="cover-place cover-monastery"><span class="cover-symbol" data-pictogram="heritage"></span><span data-text="coverMonastery">Rilai kolostor</span></span>
-              <span class="cover-scale">5 km</span>
-            </figure>
-          </div>
-          <ul class="map-legend atlas-legend" id="atlas-legend" data-aria="legend" aria-label="Jelmagyarázat">
-            <li><span class="legend-route" aria-hidden="true"></span><span data-text="route">Útvonal</span></li>
-          </ul>
-        </section>
+          </figcaption>
+        </figure>
       </section>
 
       <section class="shell explorer" id="explore" tabindex="-1" aria-labelledby="explore-title">
@@ -79,9 +64,7 @@
         <form class="filters" id="filters" role="search" aria-labelledby="explore-title">
           <label class="search-field">
             <span data-text="search">Keresés</span>
-            <span class="search-input">
-              <input type="search" id="search" name="search" placeholder="Név, helyszín vagy kulcsszó" autocomplete="off">
-            </span>
+            <input type="search" id="search" name="search" placeholder="Név, helyszín vagy kulcsszó" autocomplete="off">
           </label>
           <label>
             <span id="category-label" data-text="category">Kategória</span>
@@ -99,7 +82,7 @@
               <option value="route" data-text="routes">Útvonalak</option>
             </select>
           </label>
-          <button type="reset" class="button reset-filters" id="reset-filters" data-text="reset" disabled>Törlés</button>
+          <button type="reset" class="text-button reset-filters" id="reset-filters" data-text="reset" disabled>Törlés</button>
         </form>
 
         <div class="demo-notice" id="demo-notice" hidden>
@@ -126,7 +109,7 @@
               <div id="map" aria-labelledby="map-title" role="region"></div>
               <p class="tile-notice" id="tile-notice" role="status" hidden></p>
             </div>
-            <ul class="map-legend map-legend-filters" id="map-legend" data-aria="legend" aria-label="Jelmagyarázat" hidden></ul>
+            <ul class="map-legend" id="map-legend" data-aria="legend" aria-label="Jelmagyarázat" hidden></ul>
           </section>
         </div>
         <noscript><p class="message">A katalógushoz JavaScript szükséges. / This catalog requires JavaScript. / За каталога е необходим JavaScript.</p></noscript>
@@ -136,9 +119,14 @@
     <footer class="site-footer">
       <div class="shell footer-inner">
         <span class="footer-name" data-text="siteName">Rila völgye</span>
-        <div class="footer-links">
-          <a id="sheet-link" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTLijcKeS2RHrfgzoQaeZl_qcVD5o5DRxF7kPGMQRmfX_Hv4So1wYP4IyrdZiNuj2d8w6YscOeoau4k/pub?gid=0&amp;single=true&amp;output=csv" data-text="dataSource">A katalógus adatforrása</a>
-          <span><span data-text="terrainSource">Domborzati adatok</span> · <a href="https://registry.opendata.aws/terrain-tiles/">Mapzen Terrain Tiles</a></span>
+        <div class="footer-details">
+          <div class="footer-links">
+            <a id="sheet-link" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTLijcKeS2RHrfgzoQaeZl_qcVD5o5DRxF7kPGMQRmfX_Hv4So1wYP4IyrdZiNuj2d8w6YscOeoau4k/pub?gid=0&amp;single=true&amp;output=csv" data-text="dataSource">A katalógus adatforrása</a>
+            <span><span data-text="terrainSource">Domborzati adatok</span> · <a href="https://registry.opendata.aws/terrain-tiles/">Mapzen Terrain Tiles</a></span>
+            <span><span data-text="siteLicense">Az oldal licence</span> · <a href="https://github.com/pisipite/rila/blob/main/LICENSE" lang="en" hreflang="en">GNU GPL v3.0</a></span>
+            <a id="imprint-link" href="./impresszum.html" data-text="imprint">Impresszum</a>
+          </div>
+          <p class="footer-notice" data-text="aiDisclosure">Az oldal mesterséges intelligencia segítségével készült.</p>
         </div>
       </div>
     </footer>

@@ -1,7 +1,8 @@
-import { categoryLabels, loadCatalog, matchingItems, sheetUrl } from "./catalog.js?v=2";
-import { languages, localized, messages } from "./i18n.js";
-import { createMap } from "./map.js?v=3";
-import { createPictogram, pointLegendEntry } from "./pictograms.js";
+import { loadCatalog, matchingItems, sheetUrl } from "./catalog.js?v=3";
+import { applyPageLanguage, languages, localized, messages } from "./i18n.js?v=2";
+import { createMap } from "./map.js?v=4";
+import { createPictogram } from "./pictograms.js";
+import { createCoverTitle } from "./cover-title.js";
 
 const params = new URLSearchParams(location.search);
 const demo = params.get("demo") === "1";
@@ -31,11 +32,10 @@ const mapMessage = byId("map-mode-message");
 const detailDialog = byId("detail-dialog");
 const detailContent = byId("detail-content");
 const tileNotice = byId("tile-notice");
-const atlasLegend = byId("atlas-legend");
-const atlasLineEntries = [...atlasLegend.children];
 const mapLegend = byId("map-legend");
 const viewLinks = document.querySelectorAll("[data-view]");
 const languageButtons = document.querySelectorAll("[data-language]");
+const syncCoverTitle = createCoverTitle(byId("hero-title"), document.querySelector(".brand"));
 const map = createMap(byId("map"), {
   fitButton: byId("fit-map"),
   notice: tileNotice,
@@ -77,25 +77,13 @@ function previewUrl(enabled) {
 
 function setLanguage(next) {
   language = next;
-  strings = messages[language];
+  strings = applyPageLanguage(language);
   numberFormat = new Intl.NumberFormat(language);
-  document.documentElement.lang = language;
   document.title = strings.siteName;
   document.querySelector('meta[name="description"]').content = strings.heroDescription;
-  document.querySelectorAll("[data-text]").forEach((node) => {
-    node.textContent = strings[node.dataset.text];
-  });
-  document.querySelectorAll("[data-aria]").forEach((node) => {
-    node.setAttribute("aria-label", strings[node.dataset.aria]);
-  });
-  languageButtons.forEach((button) => {
-    button.setAttribute("aria-pressed", String(button.dataset.language === language));
-  });
+  byId("imprint-link").href = `./impresszum.html?lang=${language}`;
+  syncCoverTitle();
   fields.search.placeholder = strings.searchPlaceholder;
-  const atlasPointEntries = ["nature", "village", "heritage"].map((categoryKey) =>
-    pointLegendEntry(categoryKey, label(categoryLabels[categoryKey])),
-  );
-  atlasLegend.replaceChildren(...atlasPointEntries, ...atlasLineEntries);
   if (map) map.setLabels(strings);
   else tileNotice.textContent = strings.mapError;
   byId("exit-demo").href = previewUrl(false);
@@ -187,7 +175,9 @@ function makePhoto(item, className) {
 
 function itemMetadata(item) {
   const metadata = element("div", "item-meta");
-  metadata.append(element("span", "category-label", label(item.category) || strings[item.kind]));
+  const category = element("span", "category-label");
+  category.append(createPictogram(item.categoryKey), element("span", "", label(item.category) || strings[item.kind]));
+  metadata.append(category);
   if (label(item.locality)) metadata.append(element("span", "item-locality", label(item.locality)));
   return metadata;
 }

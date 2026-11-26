@@ -1,4 +1,4 @@
-import { localized } from "./i18n.js";
+import { localized } from "./i18n.js?v=2";
 import { createPictogram } from "./pictograms.js";
 
 const regionCenter = [42.1271, 23.2207];

@@ -1,5 +1,5 @@
 import { catalogPhotos } from "./data/catalog-photos.js";
-import { languages } from "./i18n.js";
+import { languages } from "./i18n.js?v=2";
 
 export const sheetUrl =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vTLijcKeS2RHrfgzoQaeZl_qcVD5o5DRxF7kPGMQRmfX_Hv4So1wYP4IyrdZiNuj2d8w6YscOeoau4k/pub?gid=0&single=true&output=csv";
