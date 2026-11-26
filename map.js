@@ -134,18 +134,20 @@ export function createMap(container, { fitButton, notice, selectItem, initialLab
     if (fit) fitItems();
   }
 
-  function focusItem(key) {
+  function focusItem(key, { fit = true } = {}) {
     const layer = layersByKey.get(key);
     if (!layer) return;
     map.invalidateSize({ pan: false });
 
-    if (layer instanceof L.Marker) {
-      map.setView(layer.getLatLng(), 15, { animate: false });
-    } else {
-      map.fitBounds(layer.getBounds(), { padding: [45, 45], maxZoom: 15, animate: false });
+    if (fit) {
+      if (layer instanceof L.Marker) {
+        map.setView(layer.getLatLng(), 15, { animate: false });
+      } else {
+        map.fitBounds(layer.getBounds(), { padding: [45, 45], maxZoom: 15, animate: false });
+      }
     }
     layer.openPopup();
-    layer.getElement()?.focus({ preventScroll: true });
+    if (fit) layer.getElement()?.focus({ preventScroll: true });
   }
 
   return { setLabels, setItems, fitItems, focusItem };

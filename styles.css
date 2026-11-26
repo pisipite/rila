@@ -326,6 +326,7 @@ button:disabled, input:disabled, select:disabled { cursor: default; }
 .button.hero-link:hover { background: #fff4d7; }
 
 .explorer { padding-block-end: clamp(3rem, 6vw, 5rem); }
+.explorer:focus { outline: none; }
 .explore-heading {
   display: flex;
   justify-content: space-between;
@@ -479,6 +480,16 @@ button:disabled, input:disabled, select:disabled { cursor: default; }
   text-underline-offset: 0.18em;
 }
 .map-action:hover { color: var(--copper); }
+
+@media (width > 58rem) {
+  .place-card-mapped { position: relative; }
+  .place-card-mapped .title-button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .place-card-mapped .map-action { position: relative; z-index: 1; }
+}
 
 .message { padding: 1.15rem 1.25rem; background: var(--surface); }
 .message h3 { margin: 0 0 0.5rem; font: 600 1.45rem / 1.2 var(--display); }

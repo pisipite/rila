@@ -1,6 +1,6 @@
 import { loadCatalog, matchingItems, sheetUrl } from "./catalog.js?v=3";
 import { applyPageLanguage, languages, localized, messages } from "./i18n.js?v=2";
-import { createMap } from "./map.js?v=4";
+import { createMap } from "./map.js?v=5";
 import { createPictogram } from "./pictograms.js";
 import { createCoverTitle } from "./cover-title.js";
 
@@ -26,6 +26,7 @@ const fields = {
 const resetFilters = byId("reset-filters");
 const listPanel = byId("list-panel");
 const resultsLayout = byId("results-layout");
+const sideBySideResults = window.matchMedia("(width > 58rem)");
 const cards = byId("cards");
 const listMessage = byId("list-message");
 const mapMessage = byId("map-mode-message");
@@ -182,25 +183,34 @@ function itemMetadata(item) {
   return metadata;
 }
 
-function showOnMap(item) {
+function showOnMap(item, { alongsideList = false } = {}) {
   if (!map) return;
-  setView("map");
-  updateUrl();
-  byId("map-panel").scrollIntoView();
-  map.focusItem(item.key);
+  if (!alongsideList) {
+    setView("map");
+    updateUrl();
+    byId("map-panel").scrollIntoView();
+  }
+  map.focusItem(item.key, { fit: !alongsideList });
 }
 
 function makeCard(item) {
   const card = element("li", "place-card");
+  const mapped = Boolean(item.geometry && map);
+  card.classList.toggle("place-card-mapped", mapped);
   if (item.image) card.append(makePhoto(item, "card-photo"));
   const body = element("div", "card-body");
   const heading = element("h3", "card-title");
-  heading.append(action(label(item.name), () => showDetails(item), "title-button"));
+  heading.append(action(label(item.name), () => {
+    if (mapped && sideBySideResults.matches) showOnMap(item, { alongsideList: true });
+    else showDetails(item);
+  }, "title-button"));
   body.append(itemMetadata(item), heading);
   const description = label(item.description);
   if (description) body.append(element("p", "card-description", description));
-  if (item.geometry && map) {
-    body.append(action(strings.viewOnMap, () => showOnMap(item), "text-button map-action"));
+  if (mapped) {
+    body.append(action(strings.viewOnMap, () => {
+      showOnMap(item, { alongsideList: sideBySideResults.matches });
+    }, "text-button map-action"));
   }
   card.append(body);
   return card;
